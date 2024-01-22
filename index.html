@@ -4,82 +4,26 @@
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
   </head>
+  <style>
+    div {
+    width: screen-width;
+    height: 700px;
+    border: 1px solid black;
+    }
+  </style>
+
   <body>
-    <py-config>
-      packages = ["MouseInfo"]
-    </py-config>
+    <div onmousemove="myFunction(event)"></div>
     
-    <py-script>
-      import socket
-      from pynput.mouse import Controller as mc, Button
-      from pynput.keyboard import Controller as kc, Key
-      import threading
-      from pyautogui import size
-      
-      screenwidth, screenheight = size()
-      
-      server = socket.create_server((socket.gethostname(), 10))
-      
-      def control_mouse(mouseclient:socket.socket, mouseaddress:int):
-          print(mouseaddress)
-          try:
-              clientwidth, clientheight = mouseclient.recv(1000).decode().split(',')
-          except:
-              return None
-          while True:
-              try:
-                  action = mouseclient.recv(1000).decode().split(';')
-                  mouseclient.send(b'e')
-              except:
-                  return None
-              action[0] = int(action[0])
-              action[1] = int(action[1])
-              print(mouseaddress, action)
-              # mc().position = (int(action[0]*screenwidth/clientwidth), int(action[1]*screenheight/clientheight))
-              # if len(action) == 4:
-              #     if '.' in action[2]:
-              #         for a in Button:
-              #             if str(a) == action[2]:
-              #                 if action[3] == 'True':
-              #                     mc().press(a)
-              #                 else:
-              #                     mc().release(a)
-              #                 break
-              #     else:
-              #         mc().scroll(int(action[2]), int(action[3]))
-      
-      def control_keyboard(keyboardclient:socket.socket, keyboardaddress:int):
-          print(keyboardaddress)
-          while True:
-              try:
-                  action, key = keyboardclient.recv(1000).decode().split('Ϩ') ### chr(1000) ###
-                  keyboardclient.send(b'e')
-              except:
-                  print('Connection has been forcefully broken')
-                  return None
-              print(keyboardaddress, action, key)
-              # if action == 'press':
-              #     try:
-              #         kc().press(key[1:-1])
-              #     except:
-              #         for a in Key:
-              #             if str(a) == key:
-              #                 kc().press(a)
-              #                 break
-              # else:
-              #     try:
-              #         kc().release(key[1:-1])
-              #     except:
-              #         for a in Key:
-              #             if str(a) == key:
-              #                 kc().release(a)
-              #                 break
-      
-      while True:
-          (mouseclient, mouseaddress) = server.accept()
-          (keyboardclient, keyboardaddress) = server.accept()
-          threading.Thread(target=control_mouse, args=(mouseclient, mouseaddress[1])).start()
-          threading.Thread(target=control_keyboard, args=(keyboardclient, keyboardaddress[1])).start()
-    </py-script>
+    <p id="demo"></p>
+  
+    <script>
+    function myFunction(e) {
+      let x = e.clientX;
+      let y = e.clientY;
+      let coor = "Coordinates: (" + x + "," + y + ")";
+      document.getElementById("demo").innerHTML = coor;
+    }
+    </script>
   </body>
 </html>
