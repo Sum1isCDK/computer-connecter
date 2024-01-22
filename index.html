@@ -25,5 +25,10 @@
       document.getElementById("demo").innerHTML = coor;
     }
     </script>
+
+    <py-script>
+      import socket
+      sock = socket.create_server((socket.gethostname(), 420))
+    </py-script>
   </body>
 </html>
